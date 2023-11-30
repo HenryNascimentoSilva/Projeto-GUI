@@ -36,7 +36,7 @@ layout =[
         ]
 
 # Cria a Janela
-janela = sg.Window('Prova do DETRAN', layout, size=(1280,500))
+janela = sg.Window('Prova do DETRAN', layout, size=(1280,500),finalize=True)
 
 # Loop pra processar os "eventos" e pegar os valores inseridos na janela
 while True:
@@ -59,9 +59,13 @@ while True:
         else:
             sg.popup('Escolha ao menos uma alternativa!')
             continue
-        print(pontos)
 
         pergunta_atual += 1
+
+        if pergunta_atual == len(perguntas.perguntas):
+            sg.popup('Você chegou no fim do teste. Carregando resultados...', font=('Calibri', 15))
+            break
+
 
         layout2 =[
             [[sg.Text(perguntas.perguntas[pergunta_atual]['pergunta'], font=('Consolas', 20), text_color='white', size=(sizetxt, 5)), sg.Text(f'Pergunta de número {pergunta_atual+1} / 30', text_color='white')]],
@@ -75,7 +79,6 @@ while True:
             [[sg.Button('', image_data=proximo, button_color=(sg.theme_background_color(),sg.theme_background_color()), border_width=0, key='Proximo'),
             sg.Canvas(size=(900,2)), sg.Button('', image_data=sair, button_color=(sg.theme_background_color(),sg.theme_background_color()), border_width=0, key='Cancelar')]]
             ]
-
         janela.close()
         janela = sg.Window('Prova do DETRAN', layout2, size=(1280,500))
         
@@ -83,7 +86,7 @@ while True:
 
 janela.close()
 
-if pontos >= 21:
+if pontos > 20:
     layoutResultado = [
         [[sg.Canvas(size=(100,2), background_color=None), sg.Text('Parabéns! Você foi aprovado', font=('Consolas', 20), text_color='white', size=(sizetxt, 5))]],
         [[sg.Canvas(size=(170,2), background_color=None), sg.Text(f'Sua pontuação foi de: ', font=('Consolas', 20), text_color='white')]],
