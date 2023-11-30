@@ -1,6 +1,7 @@
 import base64
 import PySimpleGUI as sg
 import perguntas
+import sys
 
 pergunta_atual = 0
 
@@ -13,6 +14,7 @@ def retornarBase64(image):
 pontos = 0
 sg.theme('DarkBlue16')
 sizetxt = 65
+pergunta = perguntas.perguntas
 
 # Botão de próximo e sair:
 proximo = retornarBase64('prox')
@@ -34,42 +36,38 @@ layout =[
         ]
 
 # Cria a Janela
-janela = sg.Window('Prova do DETRAN', layout, size=(1280,500))
+janela = sg.Window('Prova do DETRAN', layout, size=(1280,500),finalize=True)
 
 # Loop pra processar os "eventos" e pegar os valores inseridos na janela
 while True:
     event, values = janela.read()
     #se o usuário fechar ou cancelar
     if event == sg.WIN_CLOSED or event == 'Cancelar':
+        sys.exit()
         break
 
+
     if event == 'Proximo':
-        if values[0]:
-            if perguntas.perguntas[pergunta_atual]['resp'] == perguntas.perguntas[pergunta_atual]['opcoes'][0]:
-                pontos += 1
-       
-        elif values[1]:
-            if perguntas.perguntas[pergunta_atual]['resp'] == perguntas.perguntas[pergunta_atual]['opcoes'][1]:
-                pontos += 1
 
-        elif values[2]:
-            if perguntas.perguntas[pergunta_atual]['resp'] == perguntas.perguntas[pergunta_atual]['opcoes'][2]:
-                pontos += 1                
-        
-        elif values[3]:
-            if perguntas.perguntas[pergunta_atual]['resp'] == perguntas.perguntas[pergunta_atual]['opcoes'][3]:
-                pontos += 1
+        value_insert = any(values.values())
 
-        print(pontos)
+        if value_insert:
+            for i in values:
+                if values[i]:
+                    if pergunta[pergunta_atual]['resp'] == pergunta[pergunta_atual]['opcoes'][i]:
+                        pontos+= 1
+        else:
+            sg.popup('Escolha ao menos uma alternativa!')
+            continue
 
         pergunta_atual += 1
 
         if pergunta_atual == len(perguntas.perguntas):
-                sg.popup('Você chegou no fim do teste. Carregando resultados...', font=('Calibri', 15))
-                break
+            sg.popup('Você chegou no fim do teste. Carregando resultados...', font=('Calibri', 15))
+            break
 
 
-        layout =[   
+        layout2 =[
             [[sg.Text(perguntas.perguntas[pergunta_atual]['pergunta'], font=('Consolas', 20), text_color='white', size=(sizetxt, 5)), sg.Text(f'Pergunta de número {pergunta_atual+1} / 30', text_color='white')]],
             [sg.Canvas(size=(1100,2), background_color='white')],
             [sg.Canvas(size=(0,10))],
@@ -81,15 +79,14 @@ while True:
             [[sg.Button('', image_data=proximo, button_color=(sg.theme_background_color(),sg.theme_background_color()), border_width=0, key='Proximo'),
             sg.Canvas(size=(900,2)), sg.Button('', image_data=sair, button_color=(sg.theme_background_color(),sg.theme_background_color()), border_width=0, key='Cancelar')]]
             ]
-
         janela.close()
-        janela = sg.Window('Janela teste', layout, size=(1280,500))
+        janela = sg.Window('Prova do DETRAN', layout2, size=(1280,500))
         
         continue
 
 janela.close()
 
-if pontos >= 21:
+if pontos > 20:
     layoutResultado = [
         [[sg.Canvas(size=(100,2), background_color=None), sg.Text('Parabéns! Você foi aprovado', font=('Consolas', 20), text_color='white', size=(sizetxt, 5))]],
         [[sg.Canvas(size=(170,2), background_color=None), sg.Text(f'Sua pontuação foi de: ', font=('Consolas', 20), text_color='white')]],
@@ -113,3 +110,4 @@ while True:
     #se o usuário fechar ou cancelar
     if event == sg.WIN_CLOSED or event == 'Cancelar':
         break
+janela2.close()
