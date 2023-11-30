@@ -1,6 +1,7 @@
 import base64
 import PySimpleGUI as sg
 import perguntas
+import sys
 
 pergunta_atual = 0
 
@@ -42,7 +43,9 @@ while True:
     event, values = janela.read()
     #se o usuário fechar ou cancelar
     if event == sg.WIN_CLOSED or event == 'Cancelar':
+        sys.exit()
         break
+
 
     if event == 'Proximo':
 
@@ -60,12 +63,7 @@ while True:
 
         pergunta_atual += 1
 
-        if pergunta_atual == len(perguntas.perguntas):
-                sg.popup('Você chegou no fim do teste. Carregando resultados...', font=('Calibri', 15))
-                break
-
-
-        layout =[   
+        layout2 =[
             [[sg.Text(perguntas.perguntas[pergunta_atual]['pergunta'], font=('Consolas', 20), text_color='white', size=(sizetxt, 5)), sg.Text(f'Pergunta de número {pergunta_atual+1} / 30', text_color='white')]],
             [sg.Canvas(size=(1100,2), background_color='white')],
             [sg.Canvas(size=(0,10))],
@@ -79,7 +77,7 @@ while True:
             ]
 
         janela.close()
-        janela = sg.Window('Janela teste', layout, size=(1280,500))
+        janela = sg.Window('Prova do DETRAN', layout2, size=(1280,500))
         
         continue
 
@@ -109,3 +107,4 @@ while True:
     #se o usuário fechar ou cancelar
     if event == sg.WIN_CLOSED or event == 'Cancelar':
         break
+janela2.close()
