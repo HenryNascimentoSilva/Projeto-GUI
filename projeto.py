@@ -13,6 +13,7 @@ def retornarBase64(image):
 pontos = 0
 sg.theme('DarkBlue16')
 sizetxt = 65
+pergunta = perguntas.perguntas
 
 # Botão de próximo e sair:
 proximo = retornarBase64('prox')
@@ -44,22 +45,17 @@ while True:
         break
 
     if event == 'Proximo':
-        if values[0]:
-            if perguntas.perguntas[pergunta_atual]['resp'] == perguntas.perguntas[pergunta_atual]['opcoes'][0]:
-                pontos += 1
-       
-        elif values[1]:
-            if perguntas.perguntas[pergunta_atual]['resp'] == perguntas.perguntas[pergunta_atual]['opcoes'][1]:
-                pontos += 1
 
-        elif values[2]:
-            if perguntas.perguntas[pergunta_atual]['resp'] == perguntas.perguntas[pergunta_atual]['opcoes'][2]:
-                pontos += 1                
-        
-        elif values[3]:
-            if perguntas.perguntas[pergunta_atual]['resp'] == perguntas.perguntas[pergunta_atual]['opcoes'][3]:
-                pontos += 1
+        value_insert = any(values.values())
 
+        if value_insert:
+            for i in values:
+                if values[i]:
+                    if pergunta[pergunta_atual]['resp'] == pergunta[pergunta_atual]['opcoes'][i]:
+                        pontos+= 1
+        else:
+            sg.popup('Escolha ao menos uma alternativa!')
+            continue
         print(pontos)
 
         pergunta_atual += 1
